@@ -3,10 +3,10 @@ import { Table, Button, Form } from "react-bootstrap";
 import { ThemeContext } from "../../context/ThemeContext";
 import Loader from "../../components/Loader";
 import axios from "axios";
-import { MovieContext } from "../../context/MovieContext";
+import { GlobalContext } from "../../context/GlobalContext";
 
 function GameTable() {
-  const { games, setGames, isLoading } = useContext(MovieContext);
+  const { games, setGames, isLoading } = useContext(GlobalContext);
   const [darkTheme, setDarkTheme] = useContext(ThemeContext);
   const [indexofForm, setIndexofForm] = useState(0);
   const [statusForm, setStatusForm] = useState("create");

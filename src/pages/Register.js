@@ -1,59 +1,22 @@
 import React, { useState, useContext } from "react";
 import { Card, Button, Container, Form } from "react-bootstrap";
 import axios from "axios";
-import { GlobalContext } from "../context/GlobalContext";
 import eye_icon from "../assets/eye.svg";
 import eye_slash from "../assets/eye-slash.svg";
-import { useHistory, Link, Route, Switch } from "react-router-dom";
-import Register from "./Register";
+import { useHistory, Route, Switch, Link } from "react-router-dom";
+import { GlobalContext } from "../context/GlobalContext";
+import Login from "./Login";
 
-function Login() {
+function Register() {
   const [input, setInput] = useState({
     username: "",
     password: "",
   });
+  const { users, setUsers } = useContext(GlobalContext);
   const history = useHistory();
-  const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // handle button click of login form
-  const handleLogin = () => {
-    setError(null);
-    setLoading(true);
-
-    let username = input.username;
-    let password = input.password;
-
-    if (username === "" || password === "") {
-      setError("Username or Password required");
-      setLoading(false);
-    } else {
-      axios
-        .post("https://backendexample.sanbersy.com/api/login", {
-          username: username,
-          password: password,
-        })
-        .then((response) => {
-          setLoading(false);
-          // console.log(response);
-          // history.push("/");
-
-          // // props.history.push("/");
-          if (response.data === "invalid username or password") {
-            setError(response.data);
-          } else {
-            setIsLoggedIn(!isLoggedIn);
-            history.push("/");
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          setError(error.data);
-        });
-    }
-  };
 
   const handleChange = (event) => {
     let typeOfInput = event.target.name;
@@ -72,10 +35,42 @@ function Login() {
     }
   };
 
+  const createAccount = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    let username = input.username;
+    let password = input.password;
+
+    if (
+      username.replace(/\s/g, "") !== "" &&
+      password.replace(/\s/g, "") !== ""
+    ) {
+      axios
+        .post(`https://backendexample.sanbersy.com/api/users`, {
+          username: username,
+          password: password,
+        })
+        .then((res) => {
+          setUsers([
+            ...users,
+            {
+              id: res.data.id,
+              username: username,
+              password: password,
+            },
+          ]);
+        });
+      setLoading(false);
+      history.push("/login");
+    } else {
+      setLoading(false);
+      setError("invalid username or password");
+    }
+  };
   return (
     <>
       <Container className="mt-5">
-        <h2 className="mb-4">Login</h2>
+        <h2 className="mb-4">Daftar Akunmu</h2>
         <Card>
           <Card.Body>
             <Form>
@@ -131,29 +126,27 @@ function Login() {
                 )}
               </Form.Group>
             </Form>
-
             <Form.Group className="my-3">
               <Form.Label>
-                Belum mempunyai akun? <Link to="/daftar">Yuk Daftar</Link>
+                Sudah mempunyai akun? <Link to="/login">Login disini</Link>
               </Form.Label>
             </Form.Group>
-
             <Button
               variant="primary"
               type="submit"
               disabled={loading}
-              onClick={handleLogin}
+              onClick={createAccount}
             >
-              {loading ? "Loading..." : "Login"}
+              {loading ? "Loading..." : "Daftar"}
             </Button>
           </Card.Body>
         </Card>
       </Container>
       <Switch>
-        <Route path="/daftar" component={Register} />
+        <Route path="/login" component={Login} />
       </Switch>
     </>
   );
 }
 
-export default Login;
+export default Register;

@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
-import { MovieContext } from "../../context/MovieContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import { ThemeContext } from "../../context/ThemeContext";
 import { Table, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import Loader from "../../components/Loader";
 
 function MovieTable() {
-  const { movies, setMovies, isLoading } = useContext(MovieContext);
+  const { movies, setMovies, isLoading } = useContext(GlobalContext);
   const [darkTheme, setDarkTheme] = useContext(ThemeContext);
   const [indexofForm, setIndexofForm] = useState(0);
   const [statusForm, setStatusForm] = useState("create");
@@ -16,7 +16,9 @@ function MovieTable() {
     year: 0,
     duration: 0,
     genre: "",
+    review: "",
     rating: 0,
+    image_url: "",
   });
 
   const handleDelete = (e) => {
@@ -46,7 +48,9 @@ function MovieTable() {
       year: dataEdit.year,
       duration: dataEdit.duration,
       genre: dataEdit.genre,
+      review: dataEdit.review,
       rating: dataEdit.rating,
+      image_url: dataEdit.image_url,
     });
     setIndexofForm(index);
     setStatusForm("edit");
@@ -79,6 +83,14 @@ function MovieTable() {
         setInput({ ...input, rating: event.target.value });
         break;
       }
+      case "review": {
+        setInput({ ...input, review: event.target.value });
+        break;
+      }
+      case "image_url": {
+        setInput({ ...input, image_url: event.target.value });
+        break;
+      }
 
       default:
         break;
@@ -94,7 +106,9 @@ function MovieTable() {
     let year = parseInt(input.year);
     let duration = parseInt(input.duration);
     let genre = input.genre;
+    let review = input.review;
     let rating = parseInt(input.rating);
+    let image_url = input.image_url;
 
     if (
       title.replace(/\s/g, "") !== "" &&
@@ -108,7 +122,9 @@ function MovieTable() {
             year: year,
             duration: duration,
             genre: genre,
+            review: review,
             rating: rating,
+            image_url: image_url,
           })
           .then((res) => {
             setMovies([
@@ -120,10 +136,11 @@ function MovieTable() {
                 year: year,
                 duration: duration,
                 genre: genre,
+                review: review,
                 rating: rating,
+                image_url: image_url,
               },
             ]);
-            // console.log(foodData);
           });
       } else if (statusForm === "edit") {
         axios
@@ -133,7 +150,9 @@ function MovieTable() {
             year: year,
             duration: duration,
             genre: genre,
+            review: review,
             rating: rating,
+            image_url: image_url,
           })
           .then((res) => {
             let updatedData = movies.find((movie) => movie.id === index);
@@ -144,6 +163,8 @@ function MovieTable() {
             updatedData.duration = parseInt(input.duration);
             updatedData.genre = input.genre;
             updatedData.rating = parseInt(input.rating);
+            updatedData.image_url = input.image_url;
+            updatedData.review = input.review;
             setMovies([...movies]);
           });
       }
@@ -157,7 +178,9 @@ function MovieTable() {
       year: 0,
       duration: 0,
       genre: "",
+      review: "",
       rating: 0,
+      image_url: "",
     });
   };
 
@@ -302,68 +325,30 @@ function MovieTable() {
             onChange={handleChange}
           />
         </Form.Group>
+        <Form.Group>
+          <Form.Label>Masukkan Review Film</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows="3"
+            name="review"
+            placeholder="Review Film"
+            value={input.review}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Masukkan Url Poster</Form.Label>
+          <Form.Control
+            type="text"
+            name="image_url"
+            placeholder="URL Poster Film"
+            value={input.image_url}
+            onChange={handleChange}
+          />
+        </Form.Group>
         <Button variant="primary" type="submit">
           Submit Data
         </Button>
-
-        {/* <div className="form-group">
-          <label>Masukkan Title</label>
-          <input
-            type="text"
-            name="title"
-            value={input.title}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Masukkan Tahun Film</label>
-          <input
-            type="text"
-            name="year"
-            value={input.year}
-            onChange={handleChange}
-          />
-        </div> */}
-        {/* <div className="form-group">
-          <label>Masukkan Durasi Film</label>
-          <input
-            type="text"
-            name="duration"
-            value={input.duration}
-            onChange={handleChange}
-          />
-        </div> */}
-        {/* <div className="form-group">
-          <label>Masukkan Genre Film</label>
-          <input
-            type="text"
-            name="genre"
-            value={input.genre}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Masukkan Rating Film</label>
-          <input
-            type="number"
-            name="rating"
-            min="0"
-            max="10"
-            value={input.rating}
-            onChange={handleChange}
-          />
-        </div> */}
-        {/* <div className="form-group">
-          <label>Masukkan Deskripsi Film</label>
-          <textarea
-            name="description"
-            value={input.description}
-            onChange={handleChange}
-            cols="30"
-            rows="10"
-          ></textarea>
-        </div> */}
-        {/* <button className="submit">Tambah Data</button> */}
       </Form>
     </>
   );

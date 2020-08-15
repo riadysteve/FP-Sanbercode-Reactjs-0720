@@ -1,12 +1,14 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 
-export const MovieContext = createContext();
+export const GlobalContext = createContext();
 
-export const MovieProvider = (props) => {
+export const GlobalProvider = (props) => {
   const [movies, setMovies] = useState(null);
   const [games, setGames] = useState(null);
+  const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -16,12 +18,26 @@ export const MovieProvider = (props) => {
       );
       setMovies(result.data);
       setIsLoading(false);
-      console.log(result.data);
+      // console.log(result.data);
     };
     if (movies === null) {
       fetchMovieData();
     }
   }, [movies]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setIsLoading(true);
+      const result = await axios.get(
+        `https://backendexample.sanbersy.com/api/users`
+      );
+      setUsers(result.data);
+      setIsLoading(false);
+    };
+    if (users === null) {
+      fetchUserData();
+    }
+  }, [users]);
 
   useEffect(() => {
     const fetchGamesData = async () => {
@@ -31,7 +47,7 @@ export const MovieProvider = (props) => {
       );
       setGames(result.data);
       setIsLoading(false);
-      console.log(result.data);
+      // console.log(result.data);
     };
     if (games === null) {
       fetchGamesData();
@@ -39,16 +55,21 @@ export const MovieProvider = (props) => {
   }, [games]);
 
   return (
-    <MovieContext.Provider
+    <GlobalContext.Provider
       value={{
         movies,
         setMovies,
         isLoading,
         games,
         setGames,
+        users,
+        isLoggedIn,
+        setUsers,
+        setIsLoading,
+        setIsLoggedIn,
       }}
     >
       {props.children}
-    </MovieContext.Provider>
+    </GlobalContext.Provider>
   );
 };
