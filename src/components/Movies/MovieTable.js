@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { GlobalContext } from "../../context/GlobalContext";
 import { ThemeContext } from "../../context/ThemeContext";
 import { Table, Button, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../components/Loader";
 
@@ -9,7 +10,6 @@ function MovieTable() {
   const { movies, setMovies, isLoading } = useContext(GlobalContext);
   const [darkTheme, setDarkTheme] = useContext(ThemeContext);
   const [indexofForm, setIndexofForm] = useState(0);
-  const [statusForm, setStatusForm] = useState("create");
   const [input, setInput] = useState({
     title: "",
     description: "",
@@ -53,7 +53,6 @@ function MovieTable() {
       image_url: dataEdit.image_url,
     });
     setIndexofForm(index);
-    setStatusForm("edit");
   };
 
   const handleChange = (event) => {
@@ -114,63 +113,32 @@ function MovieTable() {
       title.replace(/\s/g, "") !== "" &&
       description.replace(/\s/g, "") !== ""
     ) {
-      if (statusForm === "create") {
-        axios
-          .post(`https://backendexample.sanbersy.com/api/movies`, {
-            title: title,
-            description: description,
-            year: year,
-            duration: duration,
-            genre: genre,
-            review: review,
-            rating: rating,
-            image_url: image_url,
-          })
-          .then((res) => {
-            setMovies([
-              ...movies,
-              {
-                id: res.data.id,
-                title: title,
-                description: description,
-                year: year,
-                duration: duration,
-                genre: genre,
-                review: review,
-                rating: rating,
-                image_url: image_url,
-              },
-            ]);
-          });
-      } else if (statusForm === "edit") {
-        axios
-          .put(`https://backendexample.sanbersy.com/api/movies/${index}`, {
-            title: title,
-            description: description,
-            year: year,
-            duration: duration,
-            genre: genre,
-            review: review,
-            rating: rating,
-            image_url: image_url,
-          })
-          .then((res) => {
-            let updatedData = movies.find((movie) => movie.id === index);
-            console.log(updatedData);
-            updatedData.title = input.title;
-            updatedData.description = input.description;
-            updatedData.year = parseInt(input.year);
-            updatedData.duration = parseInt(input.duration);
-            updatedData.genre = input.genre;
-            updatedData.rating = parseInt(input.rating);
-            updatedData.image_url = input.image_url;
-            updatedData.review = input.review;
-            setMovies([...movies]);
-          });
-      }
+      axios
+        .put(`https://backendexample.sanbersy.com/api/movies/${index}`, {
+          title: title,
+          description: description,
+          year: year,
+          duration: duration,
+          genre: genre,
+          review: review,
+          rating: rating,
+          image_url: image_url,
+        })
+        .then((res) => {
+          let updatedData = movies.find((movie) => movie.id === index);
+          console.log(updatedData);
+          updatedData.title = input.title;
+          updatedData.description = input.description;
+          updatedData.year = parseInt(input.year);
+          updatedData.duration = parseInt(input.duration);
+          updatedData.genre = input.genre;
+          updatedData.rating = parseInt(input.rating);
+          updatedData.image_url = input.image_url;
+          updatedData.review = input.review;
+          setMovies([...movies]);
+        });
     }
 
-    setStatusForm("create");
     setIndexofForm(0);
     setInput({
       title: "",
@@ -195,9 +163,13 @@ function MovieTable() {
           onClick={handleChangeTheme}
           variant={darkTheme ? "dark" : "light"}
           style={{ border: "1px solid #333" }}
+          className="mr-3"
         >
-          {darkTheme ? "Change to Light Theme" : "Change to Dark Theme"}
+          {darkTheme ? "Ganti ke Tema Terang" : "Ganti ke Tema Gelap"}
         </Button>
+        <Link to="/create/movie" className="btn btn-primary">
+          Tambah Data
+        </Link>
       </div>
 
       <Table
@@ -260,7 +232,7 @@ function MovieTable() {
       </Table>
 
       {/* Form */}
-      <h2 className="mt-5 border-top pt-5 mb-4">Tambah Data</h2>
+      <h2 className="mt-5 border-top pt-5 mb-4">Edit Data</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
           <Form.Label>Masukkan Title</Form.Label>

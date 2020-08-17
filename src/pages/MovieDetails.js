@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Container, Col, Row } from "react-bootstrap";
+import { Container, Col, Row, Breadcrumb } from "react-bootstrap";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import BreadNav from "../components/BreadNav";
 
@@ -28,7 +28,14 @@ function MovieDetails() {
 
   return (
     <Container>
-      <BreadNav>{movie !== null && movie.title}</BreadNav>
+      <BreadNav>
+        <Link to="/" className="breadcrumb-item">
+          Home
+        </Link>
+        <Breadcrumb.Item active>
+          {movie !== null && movie.title}
+        </Breadcrumb.Item>
+      </BreadNav>
       <h1>Movie Details</h1>
       <hr />
       <Row>

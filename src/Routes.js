@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import Register from "./pages/Register";
 import MovieDetails from "./pages/MovieDetails";
 import GameDetails from "./pages/GameDetails";
+import CreateMovie from "./pages/CreateMovie";
 
 function Routes() {
   return (
@@ -20,11 +21,12 @@ function Routes() {
       <Header />
 
       <Switch>
-        <Route path="/daftar" component={Register} />
-        <Route path="/movies" component={Movies} />
-        <Route path="/games" component={Games} />
-        <Route path="/login" component={Login} />
-        <Route path="/admin" component={Admin} />
+        <Route exact path="/daftar" component={Register} />
+        <Route exact path="/movies" component={Movies} />
+        <Route exact path="/games" component={Games} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/admin" component={Admin} />
+        <Route exact path="/create/movie" component={CreateMovie} />
         <Route path="/movie/:id" component={MovieDetails} />
         <Route path="/game/:id" component={GameDetails} />
         <Route exact path="/" component={Home} />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Breadcrumb } from "react-bootstrap";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import BreadNav from "../components/BreadNav";
 
@@ -28,7 +28,12 @@ function GameDetails() {
 
   return (
     <Container>
-      <BreadNav>{game !== null && game.name}</BreadNav>
+      <BreadNav>
+        <Link to="/" className="breadcrumb-item">
+          Home
+        </Link>
+        <Breadcrumb.Item active>{game !== null && game.name}</Breadcrumb.Item>
+      </BreadNav>
       <h1>Game Details</h1>
       <hr />
 
