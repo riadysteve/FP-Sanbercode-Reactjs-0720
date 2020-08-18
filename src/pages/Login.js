@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Card, Button, Container, Form } from "react-bootstrap";
 import axios from "axios";
-import { GlobalContext } from "../context/GlobalContext";
+import { UserContext } from "../context/UserContext";
 import eye_icon from "../assets/eye.svg";
 import eye_slash from "../assets/eye-slash.svg";
 import { useHistory, Link, Route, Switch } from "react-router-dom";
@@ -13,13 +13,14 @@ function Login() {
     password: "",
   });
   const history = useHistory();
-  const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
+  const [, setUser] = useContext(UserContext);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // handle button click of login form
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
     setError(null);
     setLoading(true);
 
@@ -44,7 +45,11 @@ function Login() {
           if (response.data === "invalid username or password") {
             setError(response.data);
           } else {
-            setIsLoggedIn(!isLoggedIn);
+            setUser({ username: username });
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ username: username, password: password })
+            );
             history.push("/");
           }
         })
@@ -130,22 +135,21 @@ function Login() {
                   </>
                 )}
               </Form.Group>
+              <Form.Group className="my-3">
+                <Form.Label>
+                  Belum mempunyai akun? <Link to="/daftar">Yuk Daftar</Link>
+                </Form.Label>
+              </Form.Group>
+
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={loading}
+                onClick={handleLogin}
+              >
+                {loading ? "Loading..." : "Login"}
+              </Button>
             </Form>
-
-            <Form.Group className="my-3">
-              <Form.Label>
-                Belum mempunyai akun? <Link to="/daftar">Yuk Daftar</Link>
-              </Form.Label>
-            </Form.Group>
-
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={loading}
-              onClick={handleLogin}
-            >
-              {loading ? "Loading..." : "Login"}
-            </Button>
           </Card.Body>
         </Card>
       </Container>

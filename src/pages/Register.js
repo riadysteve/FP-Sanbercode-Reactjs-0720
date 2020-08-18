@@ -61,6 +61,7 @@ function Register() {
           ]);
         });
       setLoading(false);
+      alert("Register Berhasil! Silahkan Login.");
       history.push("/login");
     } else {
       setLoading(false);
@@ -125,20 +126,20 @@ function Register() {
                   </>
                 )}
               </Form.Group>
+              <Form.Group className="my-3">
+                <Form.Label>
+                  Sudah mempunyai akun? <Link to="/login">Login disini</Link>
+                </Form.Label>
+              </Form.Group>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={loading}
+                onClick={createAccount}
+              >
+                {loading ? "Loading..." : "Daftar"}
+              </Button>
             </Form>
-            <Form.Group className="my-3">
-              <Form.Label>
-                Sudah mempunyai akun? <Link to="/login">Login disini</Link>
-              </Form.Label>
-            </Form.Group>
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={loading}
-              onClick={createAccount}
-            >
-              {loading ? "Loading..." : "Daftar"}
-            </Button>
           </Card.Body>
         </Card>
       </Container>

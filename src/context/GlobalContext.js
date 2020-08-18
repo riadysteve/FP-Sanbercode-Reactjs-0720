@@ -8,7 +8,6 @@ export const GlobalProvider = (props) => {
   const [games, setGames] = useState(null);
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -63,10 +62,8 @@ export const GlobalProvider = (props) => {
         games,
         setGames,
         users,
-        isLoggedIn,
         setUsers,
         setIsLoading,
-        setIsLoggedIn,
       }}
     >
       {props.children}

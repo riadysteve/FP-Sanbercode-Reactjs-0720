@@ -1,15 +1,16 @@
 import React, { useState, useContext } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
-import { GlobalContext } from "../context/GlobalContext";
+import { UserContext } from "../context/UserContext";
 
 const Header = () => {
   const [active, setActive] = useState("Home");
   const history = useHistory();
-  const { isLoggedIn, setIsLoggedIn } = useContext(GlobalContext);
+  const [user, setUser] = useContext(UserContext);
 
   const handleLogout = () => {
-    setIsLoggedIn(!isLoggedIn);
+    setUser(null);
+    localStorage.removeItem("user");
     history.push("/login");
   };
 
@@ -54,9 +55,9 @@ const Header = () => {
           >
             Games
           </Link>
-          {isLoggedIn ? (
+          {user ? (
             <>
-              <NavDropdown title="Admin" id="basic-nav-dropdown">
+              <NavDropdown title={user.username} id="basic-nav-dropdown">
                 <Link className="dropdown-item" to="/admin">
                   Dashboard
                 </Link>

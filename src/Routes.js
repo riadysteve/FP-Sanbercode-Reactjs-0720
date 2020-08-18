@@ -1,5 +1,8 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+
+// Context
+import { UserContext } from "./context/UserContext";
 
 // Component
 import Header from "./components/Header";
@@ -16,20 +19,38 @@ import GameDetails from "./pages/GameDetails";
 import CreateMovie from "./pages/CreateMovie";
 
 function Routes() {
+  const [user] = useContext(UserContext);
+
+  const PrivateRoute = ({ user, ...props }) => {
+    if (user) {
+      return <Route {...props} />;
+    } else {
+      return <Redirect to="/login" />;
+    }
+  };
+
+  const LoginRoute = ({ user, ...props }) =>
+    user ? <Redirect to="/" /> : <Route {...props} />;
+
   return (
     <>
       <Header />
 
       <Switch>
-        <Route exact path="/daftar" component={Register} />
-        <Route exact path="/movies" component={Movies} />
-        <Route exact path="/games" component={Games} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/admin" component={Admin} />
-        <Route exact path="/create/movie" component={CreateMovie} />
-        <Route path="/movie/:id" component={MovieDetails} />
-        <Route path="/game/:id" component={GameDetails} />
-        <Route exact path="/" component={Home} />
+        <Route exact user={user} path="/daftar" component={Register} />
+        <Route exact user={user} path="/movies" component={Movies} />
+        <Route exact user={user} path="/games" component={Games} />
+        <LoginRoute exact user={user} path="/login" component={Login} />
+        <PrivateRoute exact user={user} path="/admin" component={Admin} />
+        <PrivateRoute
+          exact
+          user={user}
+          path="/create/movie"
+          component={CreateMovie}
+        />
+        <PrivateRoute user={user} path="/movie/:id" component={MovieDetails} />
+        <PrivateRoute user={user} path="/game/:id" component={GameDetails} />
+        <Route exact user={user} path="/" component={Home} />
       </Switch>
     </>
   );
